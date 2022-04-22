@@ -21,13 +21,16 @@ public class CameraControler : MonoBehaviour
     {
         Vector3 move = target.position - offset;
         transform.position = move;
-        if(rtarget.velocity.z > 0 && transform.rotation.z != 90)
+        Vector3.SmoothDamp()
+        if(rtarget.velocity.z > 0)
         {
         transform.RotateAround(target.transform.position, Vector3.up, 20 * Time.deltaTime);
         }
-        if(rtarget.velocity.z < 0 && transform.rotation.z != -90)
+        if(rtarget.velocity.z < 0)
         {
             transform.RotateAround(target.transform.position, Vector3.down, 20 * Time.deltaTime);
         }
+        transform.rotation.z = Mathf.Clamp(transform.rotation, -90, 90);
+
     }
 }
