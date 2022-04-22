@@ -54,17 +54,13 @@ public class PlayerControler : MonoBehaviour
                Debug.Log(rb.velocity);
             yield return new WaitForSeconds(25f);
         }
-        /* for (int i = 0; i < maxSpeed/acceleration; i++)
-         {
-
-         } */
         /* if (rb.velocity != maxVel)
             {
                lastVelocity = rb.velocity;
                accelerationr = (rb.velocity - lastVelocity) / Time.fixedDeltaTime;
                rb.AddForce(movement+lastVelocity*3/2);
             yield return new WaitForSeconds(25f);
-            } */
+               } */
     }
 
 

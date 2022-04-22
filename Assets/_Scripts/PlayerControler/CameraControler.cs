@@ -6,7 +6,7 @@ public class CameraControler : MonoBehaviour
 {
 
     public Transform target;
-    public GameObject gtarget;
+    public Rigidbody rtarget;
 
     private Vector3 offset;
 
@@ -21,6 +21,13 @@ public class CameraControler : MonoBehaviour
     {
         Vector3 move = target.position - offset;
         transform.position = move;
-        transform.RotateAround(gtarget.transform.position, Vector3.up, 20 * Time.deltaTime);
+        if(rtarget.velocity.z > 0 && transform.rotation.z != 90)
+        {
+        transform.RotateAround(target.transform.position, Vector3.up, 20 * Time.deltaTime);
+        }
+        if(rtarget.velocity.z < 0 && transform.rotation.z != -90)
+        {
+            transform.RotateAround(target.transform.position, Vector3.down, 20 * Time.deltaTime);
+        }
     }
 }
