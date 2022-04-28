@@ -9,6 +9,9 @@ public class CameraControler : MonoBehaviour
     public Rigidbody rtarget;
 
     private Vector3 offset;
+    private Vector3 cameraFollowVelocity = Vector3.zero;
+
+    public float followSpeed = .1f;
 
     // Start is called before the first frame update
     void Start()
@@ -19,10 +22,9 @@ public class CameraControler : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        Vector3 move = target.position - offset;
-        transform.position = move;
-        Vector3.SmoothDamp()
-        if(rtarget.velocity.z > 0)
+        Vector3 targetPosition = Vector3.SmoothDamp(transform.position, target.position - offset, ref cameraFollowVelocity, Time.deltaTime / followSpeed);
+        transform.position = targetPosition;
+        if (rtarget.velocity.z > 0)
         {
         transform.RotateAround(target.transform.position, Vector3.up, 20 * Time.deltaTime);
         }
@@ -30,7 +32,7 @@ public class CameraControler : MonoBehaviour
         {
             transform.RotateAround(target.transform.position, Vector3.down, 20 * Time.deltaTime);
         }
-        transform.rotation.z = Mathf.Clamp(transform.rotation, -90, 90);
+        transform.rotation.z.Equals(Mathf.Clamp(transform.rotation.z, -90, 90));
 
     }
 }
