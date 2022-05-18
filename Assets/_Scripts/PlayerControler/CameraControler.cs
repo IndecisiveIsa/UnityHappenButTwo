@@ -21,6 +21,5 @@ public class CameraControler : MonoBehaviour
     {
         Vector3 move = target.position - offset;
         transform.position = move;
-        transform.RotateAround(gtarget.transform.position, Vector3.up, 20 * Time.deltaTime);
     }
 }
