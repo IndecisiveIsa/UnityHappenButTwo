@@ -16,7 +16,7 @@ public class PlayerControler : MonoBehaviour
 
     public Vector3 respawnPoint;
     private Vector3 addO;
-    private List<GameObject> collectedCoins = new List<GameObject>();
+    private List<GameObject> collectedItems = new List<GameObject>();
 
 
     public float Speed = 15f;
@@ -30,6 +30,8 @@ public class PlayerControler : MonoBehaviour
     //variables for jumping
     public bool grounded = true;
     public bool canDoubleJ = false;
+    public int extraJumps = 0;
+    public bool jTiming = false;
     public LayerMask groundMask;
     public Transform groundCheck;
     private float groundDistance = .1f;
@@ -65,27 +67,52 @@ public class PlayerControler : MonoBehaviour
         grounded = Physics.CheckSphere(groundCheck.position, groundDistance, groundMask);
 
         if (InputManager.instance.jumpPressed&&grounded)
+            //base jump
         {
+            jTiming = false;
             rb.AddForce(0, jumpForce, 0);
-            yield return new WaitForSeconds(0.25f);
             canDoubleJ = true;
-            
-        }if (!grounded&&InputManager.instance.jumpPressed&&canDoubleJ)
+            yield return new WaitForSeconds(0.25f);
+            jTiming = true;
+        }
+        if (!grounded && InputManager.instance.jumpPressed&&jTiming)
+            //extra jump(s)
             {
-            Vector3 ZeroY = rb.velocity;
-            ZeroY.y = 0;
-            rb.velocity = ZeroY;
-            rb.angularVelocity = ZeroY;
-            rb.AddForce(0, jumpForce*2, 0);
-            canDoubleJ = false;
+            if (canDoubleJ)
+            {
+                jump();
+                canDoubleJ = false;
+                jTiming = false;
+                yield return new WaitForSeconds(0.25f);
+                jTiming = true;
+            }else if (extraJumps > 0)
+            {
+                jump();
+                jTiming = false;
+                extraJumps--;
+                yield return new WaitForSeconds(0.25f);
+                jTiming = true;
             }
+        }
     }
+
+    private void jump()
+    {
+        Vector3 ZeroY = rb.velocity;
+        ZeroY.y = 0;
+        rb.velocity = ZeroY;
+        rb.angularVelocity = ZeroY;
+        rb.AddForce(0, jumpForce * 2, 0);
+    }
+
+
+    private Vector3 flipY;
 
     private void OnTriggerEnter(Collider other)
     {
         if (other.CompareTag("Coin"))
         {
-            collectedCoins.Add(other.gameObject);
+            collectedItems.Add(other.gameObject);
             other.gameObject.SetActive(false);
             score++;
             coinsCollected++;
@@ -105,9 +132,9 @@ public class PlayerControler : MonoBehaviour
             coinsRemaining += coinsCollected;
             coinsCollected = 0;
             scoreText.text = "Score: " + score;
-            for(int i = 0; i < collectedCoins.Count; i++)
+            for(int i = 0; i < collectedItems.Count; i++)
             {
-                collectedCoins[i].SetActive(true);
+                collectedItems[i].SetActive(true);
             }
 
             rb.velocity = Vector3.zero;
@@ -120,6 +147,13 @@ public class PlayerControler : MonoBehaviour
         {
             addO = new Vector3(other.transform.position.x, other.transform.position.y+(1/2), other.transform.position.z);
             respawnPoint = addO;
+
+        }
+        if (other.CompareTag("JumpPower"))
+        {
+            collectedItems.Add(other.gameObject);
+            other.gameObject.SetActive(false);
+            extraJumps++;
 
         }
     }

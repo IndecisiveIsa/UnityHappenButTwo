@@ -6,6 +6,8 @@ TagManager:
   tags:
   - Coin
   - Checkpoint
+  - JumpPower
+  - SpeedF
   layers:
   - Default
   - TransparentFX
